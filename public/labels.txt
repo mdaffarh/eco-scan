@@ -1,0 +1,5 @@
+0 Organik
+1 Non Organik Daur Ulang
+2 Botol Plastik
+3 Kertas
+4 Residu
