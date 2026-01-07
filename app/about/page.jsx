@@ -39,7 +39,7 @@ export default function About() {
                 </div>
                 <h3 className="text-2xl text-[#10b981] mb-2.5 font-semibold">Ambil Foto</h3>
                 <p className="text-gray-600 text-base">
-                  Klik tombol "Mulai Scan" dan ambil foto sampah Anda
+                  Klik tombol &quot;Mulai Scan&quot; dan ambil foto sampah Anda
                 </p>
               </div>
               <div className="text-center py-8 px-5 bg-[#f8f9ff] rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_15px_rgba(0,0,0,0.1)]">
