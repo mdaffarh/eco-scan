@@ -42,7 +42,7 @@ function Navbar() {
           className="flex items-center gap-2 no-underline transition-transform duration-300 hover:scale-105"
         >
           <img 
-            src="/logo.png" 
+            src="/Logo.png" 
             alt="EcoScan Logo" 
             className="h-8 md:h-10 w-auto"
           />
