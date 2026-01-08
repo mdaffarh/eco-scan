@@ -45,27 +45,34 @@ export default function AdminSidebar() {
   return (
     <>
       {/* Mobile Menu Button */}
-      <Button variant="outline" size="icon" className="fixed top-4 left-4 z-50 lg:hidden" onClick={() => setIsOpen(!isOpen)}>
+      <Button variant="outline" size="icon" className="fixed top-4 left-4 z-50 lg:hidden bg-white shadow-lg" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
       {/* Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsOpen(false)} />}
+      {isOpen && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setIsOpen(false)} />}
 
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-screen w-64 bg-slate-900 text-white
-          transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 z-50 h-full w-64 sm:w-80 bg-slate-900 text-white
+          transition-transform duration-300 ease-in-out overflow-y-auto
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0
+          lg:w-64 lg:translate-x-0 lg:z-40
         `}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="p-6 border-b border-slate-800">
-            <h2 className="text-2xl font-bold text-green-400">🌱 EcoScan</h2>
-            <p className="text-sm text-slate-400 mt-1">Admin Panel</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-green-400">🌱 EcoScan</h2>
+                <p className="text-sm text-slate-400 mt-1">Admin Panel</p>
+              </div>
+              <Button variant="ghost" size="icon" className="lg:hidden text-white" onClick={() => setIsOpen(false)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
 
           {/* Navigation */}

@@ -7,11 +7,12 @@ import WasteLog from "@/models/WasteLog"
  * @desc    Get single waste log by ID
  * @access  Admin
  */
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await connectDB()
 
-    const wasteLog = await WasteLog.findById(params.id)
+    const { id } = await context.params
+    const wasteLog = await WasteLog.findById(id)
 
     if (!wasteLog) {
       return NextResponse.json({ success: false, error: "Waste log not found" }, { status: 404 })
@@ -32,10 +33,11 @@ export async function GET(request, { params }) {
  * @desc    Update waste log
  * @access  Admin
  */
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await connectDB()
 
+    const { id } = await context.params
     const body = await request.json()
 
     // Recalculate XP if confidence changed
@@ -43,7 +45,7 @@ export async function PUT(request, { params }) {
       body.xp_earned = Math.round(body.confidence * 10)
     }
 
-    const wasteLog = await WasteLog.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
+    const wasteLog = await WasteLog.findByIdAndUpdate(id, body, { new: true, runValidators: true })
 
     if (!wasteLog) {
       return NextResponse.json({ success: false, error: "Waste log not found" }, { status: 404 })
@@ -64,11 +66,12 @@ export async function PUT(request, { params }) {
  * @desc    Delete waste log
  * @access  Admin
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
     await connectDB()
 
-    const wasteLog = await WasteLog.findByIdAndDelete(params.id)
+    const { id } = await context.params
+    const wasteLog = await WasteLog.findByIdAndDelete(id)
 
     if (!wasteLog) {
       return NextResponse.json({ success: false, error: "Waste log not found" }, { status: 404 })

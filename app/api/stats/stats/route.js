@@ -234,29 +234,36 @@ export async function GET(request) {
       },
     ])
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        stats: {
-          totalScans,
-          totalUsers,
-          totalXP,
-          avgLevel,
-          avgConfidence,
-          totalBins,
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          stats: {
+            totalScans,
+            totalUsers,
+            totalXP,
+            avgLevel,
+            avgConfidence,
+            totalBins,
+          },
+          wasteTypeDistribution,
+          fakultasDistribution,
+          dailyScans,
+          topUsers,
+          scansByHour,
+          recentActivities,
+          binsByFakultas,
+          binTypesDistribution,
+          binTypesPerFakultas,
+          timeFilter: timeFilter || "all",
         },
-        wasteTypeDistribution,
-        fakultasDistribution,
-        dailyScans,
-        topUsers,
-        scansByHour,
-        recentActivities,
-        binsByFakultas,
-        binTypesDistribution,
-        binTypesPerFakultas,
-        timeFilter: timeFilter || "all",
       },
-    })
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      }
+    )
   } catch (error) {
     console.error("Error fetching dashboard stats:", error)
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })

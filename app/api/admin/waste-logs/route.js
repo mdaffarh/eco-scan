@@ -100,7 +100,20 @@ export async function POST(request) {
         // Check for new badges
         const scanCount = await WasteLog.countDocuments({ user_id: body.user_id })
         const uniqueTypes = await WasteLog.distinct("waste_type", { user_id: body.user_id })
-        const newBadges = checkNewBadges(user, scanCount, uniqueTypes.length, body.confidence || 0)
+        
+        // Build user stats object for badge checking
+        const userStats = {
+          totalScans: scanCount,
+          level: newLevel,
+          highestConfidence: body.confidence || 0,
+          wasteTypesScanned: uniqueTypes.length,
+          streak: user.streak || 0,
+          totalXP: user.total_xp,
+        }
+        
+        // Get current badges array, default to empty array if not set
+        const currentBadges = Array.isArray(user.badges) ? user.badges : []
+        const newBadges = checkNewBadges(userStats, currentBadges)
 
         // Add new badges
         if (newBadges.length > 0) {

@@ -7,11 +7,12 @@ import User from "@/models/User"
  * @desc    Get single user by ID
  * @access  Admin
  */
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await connectDB()
 
-    const user = await User.findById(params.id)
+    const { id } = await context.params
+    const user = await User.findById(id)
 
     if (!user) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 })
@@ -32,12 +33,13 @@ export async function GET(request, { params }) {
  * @desc    Update user
  * @access  Admin
  */
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await connectDB()
 
+    const { id } = await context.params
     const body = await request.json()
-    const user = await User.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
+    const user = await User.findByIdAndUpdate(id, body, { new: true, runValidators: true })
 
     if (!user) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 })
@@ -58,11 +60,12 @@ export async function PUT(request, { params }) {
  * @desc    Delete user
  * @access  Admin
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
     await connectDB()
 
-    const user = await User.findByIdAndDelete(params.id)
+    const { id } = await context.params
+    const user = await User.findByIdAndDelete(id)
 
     if (!user) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 })

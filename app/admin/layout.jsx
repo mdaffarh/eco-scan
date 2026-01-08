@@ -15,12 +15,12 @@ export default function AdminLayout({ children }) {
         <>{children}</>
       ) : (
         // Dashboard pages - with sidebar
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex min-h-screen bg-slate-50 overflow-x-hidden">
           <AdminSidebar />
 
           {/* Main Content */}
-          <main className="flex-1 lg:ml-64">
-            <div className="p-6 lg:p-8">{children}</div>
+          <main className="flex-1 w-full lg:ml-64 min-w-0">
+            <div className="p-4 sm:p-6 lg:p-8 max-w-full overflow-x-hidden">{children}</div>
           </main>
         </div>
       )}

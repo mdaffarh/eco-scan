@@ -13,6 +13,7 @@ import { Plus, Pencil, Trash2, Search, Eye, Loader2 } from "lucide-react"
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api"
 import { WASTE_TYPES, FAKULTAS_LIST } from "@/lib/constants"
 import { usePagination } from "@/hooks/usePagination"
+import { TableSkeleton } from "@/components/ui/skeletons"
 
 export default function WasteLogsPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -227,72 +228,69 @@ export default function WasteLogsPage() {
       </Card>
 
       {/* Table */}
-      <Card>
-        <CardHeader className="px-4 md:px-6">
-          <CardTitle className="text-lg md:text-xl">All Waste Logs ({filteredLogs.length})</CardTitle>
-        </CardHeader>
-        <CardContent className="px-0 md:px-6 pb-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="min-w-[120px]">User</TableHead>
-                  <TableHead className="min-w-[120px]">Waste Type</TableHead>
-                  <TableHead className="min-w-[100px]">Confidence</TableHead>
-                  <TableHead className="min-w-[100px]">XP Earned</TableHead>
-                  <TableHead className="min-w-[100px]">Fakultas</TableHead>
-                  <TableHead className="min-w-[150px]">Timestamp</TableHead>
-                  <TableHead className="text-right min-w-[110px]">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
+      {isLoading ? (
+        <TableSkeleton rows={10} cols={7} />
+      ) : (
+        <Card>
+          <CardHeader className="px-4 md:px-6">
+            <CardTitle className="text-lg md:text-xl">All Waste Logs ({filteredLogs.length})</CardTitle>
+          </CardHeader>
+          <CardContent className="px-0 md:px-6 pb-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin mx-auto text-green-600" />
-                      <p className="text-slate-500 mt-2">Loading waste logs...</p>
-                    </TableCell>
+                    <TableHead className="min-w-[120px]">User</TableHead>
+                    <TableHead className="min-w-[120px]">Waste Type</TableHead>
+                    <TableHead className="min-w-[100px]">Confidence</TableHead>
+                    <TableHead className="min-w-[100px]">XP Earned</TableHead>
+                    <TableHead className="min-w-[100px]">Fakultas</TableHead>
+                    <TableHead className="min-w-[150px]">Timestamp</TableHead>
+                    <TableHead className="text-right min-w-[110px]">Actions</TableHead>
                   </TableRow>
-                ) : filteredLogs.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center text-slate-500">
-                      No logs found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  currentLogs.map(log => (
-                    <TableRow key={log._id}>
-                      <TableCell className="font-medium">{getUsernameById(log.user_id)}</TableCell>
-                      <TableCell>
-                        <Badge className={getWasteTypeBadgeColor(log.waste_type)}>{log.waste_type}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm font-medium text-green-600">{log.confidence > 1 ? log.confidence.toFixed(1) : (log.confidence * 100).toFixed(1)}%</span>
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-600">{log.fakultas}</TableCell>
-                      <TableCell className="text-sm text-slate-600">{log.lokasi_id}</TableCell>
-                      <TableCell className="text-sm text-slate-600">{formatDate(log.timestamp)}</TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openViewDialog(log)}>
-                            <Eye className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEditDialog(log)}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(log._id)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
+                </TableHeader>
+                <TableBody>
+                  {filteredLogs.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-slate-500">
+                        No logs found
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                  ) : (
+                    currentLogs.map(log => (
+                      <TableRow key={log._id}>
+                        <TableCell className="font-medium">{getUsernameById(log.user_id)}</TableCell>
+                        <TableCell>
+                          <Badge className={getWasteTypeBadgeColor(log.waste_type)}>{log.waste_type}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm font-medium text-green-600">{log.confidence > 1 ? log.confidence.toFixed(1) : (log.confidence * 100).toFixed(1)}%</span>
+                        </TableCell>
+                        <TableCell className="text-sm text-slate-600">{log.fakultas}</TableCell>
+                        <TableCell className="text-sm text-slate-600">{log.lokasi_id}</TableCell>
+                        <TableCell className="text-sm text-slate-600">{formatDate(log.timestamp)}</TableCell>
+                        <TableCell>
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openViewDialog(log)}>
+                              <Eye className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEditDialog(log)}>
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(log._id)}>
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Pagination */}
       {filteredLogs.length > 0 && (

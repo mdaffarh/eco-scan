@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { isAuthenticated, logout } from "@/utils/authUtils"
@@ -38,7 +39,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto py-3 px-4 md:py-4 md:px-5 flex justify-between items-center">
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-2 no-underline transition-transform duration-300 hover:scale-105">
-          <img src="/Logo.png" alt="EcoScan Logo" className="h-8 md:h-10 w-auto" />
+          <Image src="/Logo.png" alt="EcoScan Logo" width={40} height={40} className="h-8 md:h-10 w-auto" priority />
           <span className="text-2xl md:text-3xl font-bold text-white">EcoScan</span>
         </Link>
 

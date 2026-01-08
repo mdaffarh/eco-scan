@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -207,7 +208,7 @@ export default function BinsPage() {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6 px-3 md:px-0">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
@@ -237,85 +238,89 @@ export default function BinsPage() {
         <CardHeader className="px-4 md:px-6">
           <CardTitle className="text-lg md:text-xl">Lokasi Tersedia ({filteredBins.length})</CardTitle>
         </CardHeader>
-        <CardContent className="px-0 md:px-6 pb-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="min-w-[80px]">Gambar</TableHead>
-                  <TableHead className="min-w-[100px]">ID Lokasi</TableHead>
-                  <TableHead className="min-w-[150px]">Nama Lokasi</TableHead>
-                  <TableHead className="min-w-[100px]">Fakultas</TableHead>
-                  <TableHead className="min-w-[200px]">Jenis Tempat Sampah</TableHead>
-                  <TableHead className="min-w-[200px]">Deskripsi</TableHead>
-                  <TableHead className="text-right min-w-[110px]">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <Loader2 className="h-8 w-8 animate-spin mx-auto text-green-600" />
-                      <p className="text-slate-500 mt-2">Loading locations...</p>
-                    </TableCell>
-                  </TableRow>
-                ) : filteredBins.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center text-slate-500">
-                      No locations found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  currentBins.map(bin => (
-                    <TableRow key={bin._id}>
-                      <TableCell>
-                        {bin.image_url ? (
-                          <img src={`${API_BASE_URL}${bin.image_url}`} alt={bin.label} className="w-16 h-16 object-cover rounded-lg border" />
-                        ) : (
-                          <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center">
-                            <ImageIcon className="h-6 w-6 text-slate-400" />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="font-mono text-sm">{bin.value}</TableCell>
-                      <TableCell className="font-medium">{bin.label}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{bin.fakultas}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {bin.bins?.map((type, idx) => (
-                            <Badge key={idx} className={getBinTypeBadgeColor(type)}>
-                              {type}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-600 max-w-xs truncate">{bin.description}</TableCell>
-                      <TableCell>
-                        <div className="flex justify-end gap-1">
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openViewDialog(bin)}>
-                            <Eye className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEditDialog(bin)}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(bin._id)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </TableCell>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="min-w-[80px] px-4">Gambar</TableHead>
+                      <TableHead className="min-w-[100px]">ID Lokasi</TableHead>
+                      <TableHead className="min-w-[150px]">Nama Lokasi</TableHead>
+                      <TableHead className="min-w-[100px]">Fakultas</TableHead>
+                      <TableHead className="min-w-[200px]">Jenis Tempat Sampah</TableHead>
+                      <TableHead className="min-w-[200px]">Deskripsi</TableHead>
+                      <TableHead className="text-right min-w-[110px]">Actions</TableHead>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          <Loader2 className="h-8 w-8 animate-spin mx-auto text-green-600" />
+                          <p className="text-slate-500 mt-2">Loading locations...</p>
+                        </TableCell>
+                      </TableRow>
+                    ) : filteredBins.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center text-slate-500">
+                          No locations found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      currentBins.map(bin => (
+                        <TableRow key={bin._id}>
+                          <TableCell>
+                            {bin.image_url ? (
+                              <img src={`${API_BASE_URL}${bin.image_url}`} alt={bin.label} className="w-16 h-16 object-cover rounded-lg border" />
+                            ) : (
+                              <div className="w-16 h-16 bg-slate-100 rounded-lg flex items-center justify-center">
+                                <ImageIcon className="h-6 w-6 text-slate-400" />
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">{bin.value}</TableCell>
+                          <TableCell className="font-medium">{bin.label}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{bin.fakultas}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {bin.bins?.map((type, idx) => (
+                                <Badge key={idx} className={getBinTypeBadgeColor(type)}>
+                                  {type}
+                                </Badge>
+                              ))}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm text-slate-600 max-w-xs truncate">{bin.description}</TableCell>
+                          <TableCell>
+                            <div className="flex justify-end gap-1">
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openViewDialog(bin)}>
+                                <Eye className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEditDialog(bin)}>
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(bin._id)}>
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
 
           {/* Pagination */}
           {filteredBins.length > 0 && (
-            <div className="mt-4 px-4 md:px-0 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <p className="text-xs sm:text-sm text-slate-600">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-4 border-t">
+              <p className="text-xs sm:text-sm text-slate-600 text-center sm:text-left">
                 Showing {startIndex + 1} to {Math.min(endIndex, filteredBins.length)} of {filteredBins.length} locations
               </p>
               <div className="flex items-center gap-1 sm:gap-2">

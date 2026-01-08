@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { setUser } from "@/utils/authUtils"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function Login() {
   const router = useRouter()
@@ -135,8 +136,8 @@ export default function Login() {
           >
             {isLoading ? (
               <>
-                <span className="w-5 h-5 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></span>
-                Memproses...
+                <Spinner size="sm" className="text-white" />
+                <span>Memproses...</span>
               </>
             ) : (
               "Masuk"

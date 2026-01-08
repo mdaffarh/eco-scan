@@ -8,6 +8,8 @@ import { useRequireAuth } from "@/utils/authHooks"
 import Navbar from "@/components/Navbar"
 import { loadModel, predictImage, getWasteInfo, isModelLoaded } from "@/utils/modelUtils"
 import { getUser } from "@/utils/authUtils"
+import { LoadingOverlay } from "@/components/ui/loading"
+import { Skeleton } from "@/components/ui/skeleton"
 
 // Helper function to compress image for sessionStorage
 const compressImageForStorage = async (imageElement, maxWidth = 800, quality = 0.7) => {
@@ -241,24 +243,24 @@ export default function Scan() {
   return (
     <>
       <Navbar />
-      <div className="max-w-4xl mx-auto px-5 py-5 min-h-[calc(100vh-80px)]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-5 py-4 sm:py-5 min-h-[calc(100vh-80px)]">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl text-gray-800 mb-2.5">Scan Sampah</h1>
-          <p className="text-gray-600 text-lg">Ambil atau upload foto sampah untuk identifikasi</p>
+        <div className="text-center mb-6 sm:mb-10">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-800 mb-2">Scan Sampah</h1>
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg">Ambil atau upload foto sampah untuk identifikasi</p>
 
           {/* Fakultas Info */}
           {selectedFakultas && (
-            <div className="bg-[#1e293b] rounded-2xl py-5 px-6 my-6 mx-auto max-w-2xl flex justify-between items-center shadow-[0_4px_15px_rgba(0,0,0,0.3)]">
-              <div className="flex items-center gap-3 text-white">
-                <span className="text-3xl">🏛️</span>
-                <div className="flex flex-col items-start gap-1">
-                  <span className="text-sm opacity-90 font-medium text-white">Fakultas:</span>
-                  <span className="text-lg font-semibold text-white text-left">{fakultasLabel}</span>
+            <div className="bg-[#1e293b] rounded-xl sm:rounded-2xl py-4 px-4 sm:py-5 sm:px-6 my-4 sm:my-6 mx-auto max-w-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 shadow-[0_4px_15px_rgba(0,0,0,0.3)]">
+              <div className="flex items-center gap-2 sm:gap-3 text-white">
+                <span className="text-2xl sm:text-3xl">🏛️</span>
+                <div className="flex flex-col items-start gap-0.5 sm:gap-1">
+                  <span className="text-xs sm:text-sm opacity-90 font-medium text-white">Fakultas:</span>
+                  <span className="text-base sm:text-lg font-semibold text-white text-left">{fakultasLabel}</span>
                 </div>
               </div>
               <button
-                className="bg-[#10b981] text-white border-none py-2.5 px-5 rounded-full text-sm font-semibold cursor-pointer transition-all duration-300 whitespace-nowrap hover:bg-[#059669] hover:-translate-y-0.5 hover:shadow-md"
+                className="bg-[#10b981] text-white border-none py-2 px-4 sm:py-2.5 sm:px-5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer transition-all duration-300 whitespace-nowrap hover:bg-[#059669] hover:-translate-y-0.5 hover:shadow-md w-full sm:w-auto"
                 onClick={handleChangeLocation}
               >
                 Ganti Fakultas
@@ -267,44 +269,44 @@ export default function Scan() {
           )}
 
           {isModelLoading && (
-            <div className="mt-4 py-2.5 px-5 rounded-full text-sm inline-flex items-center gap-2 bg-[#e3f2fd] text-[#1976d2]">
-              <span className="w-3.5 h-3.5 border-2 border-[rgba(25,118,210,0.3)] border-t-[#1976d2] rounded-full animate-spin inline-block"></span>
-              Memuat model AI...
+            <div className="mt-4 flex items-center justify-center gap-3 py-3 px-6 rounded-full bg-[#e3f2fd] text-[#1976d2]">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <span className="text-sm font-medium">Memuat model AI...</span>
             </div>
           )}
           {modelError && <div className="mt-4 py-2.5 px-5 rounded-full text-sm inline-flex items-center gap-2 bg-[#ffebee] text-[#c62828]">⚠️ {modelError}</div>}
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-[20px] p-10 shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
+        <div className="bg-white rounded-2xl sm:rounded-[20px] p-4 sm:p-6 md:p-10 shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
           {!previewUrl ? (
-            <div className="flex justify-center items-center min-h-[400px]">
+            <div className="flex justify-center items-center min-h-[300px] sm:min-h-[400px]">
               <div
-                className="w-full max-w-2xl h-[400px] border-[3px] border-dashed border-[#1e293b] rounded-2xl flex flex-col justify-center items-center cursor-pointer transition-all duration-300 bg-[#f8f9ff] hover:border-[#10b981] hover:bg-[#f0f2ff] hover:scale-[1.02]"
+                className="w-full max-w-2xl h-[300px] sm:h-[400px] border-[2px] sm:border-[3px] border-dashed border-[#1e293b] rounded-xl sm:rounded-2xl flex flex-col justify-center items-center cursor-pointer transition-all duration-300 bg-[#f8f9ff] hover:border-[#10b981] hover:bg-[#f0f2ff] hover:scale-[1.02]"
                 onClick={handleCameraClick}
               >
-                <span className="text-8xl mb-5">📷</span>
-                <p className="text-xl text-[#1e293b] font-medium my-1">Klik untuk ambil/upload foto</p>
-                <p className="text-sm text-gray-400 my-1">Format: JPG, PNG, JPEG</p>
+                <span className="text-6xl sm:text-8xl mb-3 sm:mb-5">📷</span>
+                <p className="text-base sm:text-lg md:text-xl text-[#1e293b] font-medium my-1 px-4 text-center">Klik untuk ambil/upload foto</p>
+                <p className="text-xs sm:text-sm text-gray-400 my-1">Format: JPG, PNG, JPEG</p>
               </div>
               <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} style={{ display: "none" }} capture="environment" />
             </div>
           ) : (
-            <div className="flex flex-col gap-8">
-              <div className="w-full max-h-[500px] rounded-2xl overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
+            <div className="flex flex-col gap-4 sm:gap-8">
+              <div className="w-full max-h-[350px] sm:max-h-[500px] rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
                 <img ref={imageRef} src={previewUrl} alt="Preview" crossOrigin="anonymous" className="w-full h-full object-contain block" />
               </div>
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <button
-                  className="py-4 px-10 text-lg font-semibold rounded-full cursor-pointer inline-flex items-center justify-center gap-2.5 transition-all duration-300 bg-white text-[#1e293b] border-2 border-[#1e293b] hover:enabled:bg-gray-50 hover:enabled:-translate-y-0.5"
+                  className="py-3 px-8 sm:py-4 sm:px-10 text-base sm:text-lg font-semibold rounded-full cursor-pointer inline-flex items-center justify-center gap-2 sm:gap-2.5 transition-all duration-300 bg-white text-[#1e293b] border-2 border-[#1e293b] hover:enabled:bg-gray-50 hover:enabled:-translate-y-0.5 flex-1 sm:flex-initial"
                   onClick={handleReset}
                   disabled={isProcessing}
                 >
                   Ganti Foto
                 </button>
                 <button
-                  className="py-4 px-10 text-lg font-semibold border-none rounded-full cursor-pointer inline-flex items-center justify-center gap-2.5 transition-all duration-300 bg-[#10b981] text-white hover:enabled:-translate-y-0.5 hover:enabled:shadow-md hover:enabled:bg-[#059669] disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="py-3 px-8 sm:py-4 sm:px-10 text-base sm:text-lg font-semibold border-none rounded-full cursor-pointer inline-flex items-center justify-center gap-2 sm:gap-2.5 transition-all duration-300 bg-[#10b981] text-white hover:enabled:-translate-y-0.5 hover:enabled:shadow-md hover:enabled:bg-[#059669] disabled:opacity-70 disabled:cursor-not-allowed flex-1 sm:flex-initial"
                   onClick={handleScan}
                   disabled={isProcessing || isModelLoading}
                 >
@@ -322,14 +324,7 @@ export default function Scan() {
           )}
         </div>
 
-        {isProcessing && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 bg-black/80 flex justify-center items-center z-[1000]">
-            <div className="text-center text-white">
-              <div className="w-[60px] h-[60px] border-[5px] border-white/30 border-t-white rounded-full animate-spin mx-auto mb-5"></div>
-              <p className="text-xl font-medium">Mengidentifikasi sampah...</p>
-            </div>
-          </div>
-        )}
+        {isProcessing && <LoadingOverlay message="Mengidentifikasi sampah..." />}
       </div>
     </>
   )

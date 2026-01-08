@@ -7,11 +7,12 @@ import Bin from "@/models/Bin"
  * @desc    Get single bin by ID
  * @access  Admin
  */
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await connectDB()
 
-    const bin = await Bin.findById(params.id)
+    const { id } = await context.params
+    const bin = await Bin.findById(id)
 
     if (!bin) {
       return NextResponse.json({ success: false, error: "Bin not found" }, { status: 404 })
@@ -32,10 +33,11 @@ export async function GET(request, { params }) {
  * @desc    Update bin
  * @access  Admin
  */
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await connectDB()
 
+    const { id } = await context.params
     const formData = await request.formData()
 
     // Handle image upload if new image provided
@@ -76,7 +78,7 @@ export async function PUT(request, { params }) {
       binData.image_url = imageUrl
     }
 
-    const bin = await Bin.findByIdAndUpdate(params.id, binData, { new: true, runValidators: true })
+    const bin = await Bin.findByIdAndUpdate(id, binData, { new: true, runValidators: true })
 
     if (!bin) {
       return NextResponse.json({ success: false, error: "Bin not found" }, { status: 404 })
@@ -97,11 +99,12 @@ export async function PUT(request, { params }) {
  * @desc    Delete bin
  * @access  Admin
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
     await connectDB()
 
-    const bin = await Bin.findByIdAndDelete(params.id)
+    const { id } = await context.params
+    const bin = await Bin.findByIdAndDelete(id)
 
     if (!bin) {
       return NextResponse.json({ success: false, error: "Bin not found" }, { status: 404 })

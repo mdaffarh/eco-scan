@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRequireAuth } from "@/utils/authHooks"
 import { logout, getUser } from "@/utils/authUtils"
 import Navbar from "@/components/Navbar"
+import { ProfileSkeleton } from "@/components/ui/skeletons"
 
 // Badge definitions (matching backend)
 const BADGE_INFO = {
@@ -214,22 +215,24 @@ export default function Profile() {
 
     fetchUserData()
 
-    // [BARU] Ambil Data History dari Backend
-    const fetchHistory = async () => {
+    // [OPTIMIZED] Fetch data in parallel using Promise.all
+    const fetchAllData = async () => {
       try {
-        const res = await fetch(`/api/waste-logs?userId=${userData.id}`)
-        const data = await res.json()
-        if (res.ok) {
-          setLogs(data.data)
+        const [historyResponse] = await Promise.all([fetch(`/api/waste-logs?userId=${userData.id}`)])
+
+        const historyData = await historyResponse.json()
+
+        if (historyResponse.ok) {
+          setLogs(historyData.data)
         }
       } catch (err) {
-        console.error("Gagal ambil history:", err)
+        console.error("Gagal ambil data:", err)
       } finally {
         setLoadingLogs(false)
       }
     }
 
-    fetchHistory()
+    fetchAllData()
   }, [router])
 
   // Fetch user statistics from backend
@@ -424,9 +427,12 @@ export default function Profile() {
 
   if (authLoading || isLoadingStats) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-16 h-16 border-4 border-[#10b981]/30 border-t-[#10b981] rounded-full animate-spin"></div>
-      </div>
+      <>
+        <Navbar />
+        <div className="px-5 max-w-7xl mx-auto py-5">
+          <ProfileSkeleton />
+        </div>
+      </>
     )
   }
 
@@ -458,20 +464,20 @@ export default function Profile() {
   return (
     <>
       <Navbar />
-      <div className="max-w-5xl mx-auto px-5 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-5 py-4 sm:py-8">
         {/* Profile Header */}
-        <div className="bg-[#1e293b] rounded-[25px] p-8 text-white mb-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="bg-[#1e293b] rounded-2xl sm:rounded-[25px] p-5 sm:p-8 text-white mb-6 sm:mb-8 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+          <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
             {/* Avatar */}
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-[#10b981] text-5xl font-bold shadow-lg">{user?.name?.charAt(0).toUpperCase() || "U"}</div>
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center text-[#10b981] text-4xl sm:text-5xl font-bold shadow-lg">{user?.name?.charAt(0).toUpperCase() || "U"}</div>
 
             {/* User Info */}
             <div className="flex-1 text-center md:text-left">
               {!isEditMode ? (
                 <>
-                  <h1 className="text-3xl font-bold mb-2">{user?.name || "User"}</h1>
-                  <p className="text-white/90 text-lg mb-1">{user?.email || "email@example.com"}</p>
-                  <p className="text-white/80 text-sm">Bergabung sejak {formatJoinDate(user?.joinDate)}</p>
+                  <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">{user?.name || "User"}</h1>
+                  <p className="text-white/90 text-base sm:text-lg mb-1">{user?.email || "email@example.com"}</p>
+                  <p className="text-white/80 text-xs sm:text-sm">Bergabung sejak {formatJoinDate(user?.joinDate)}</p>
                 </>
               ) : (
                 <div className="space-y-3">
@@ -561,18 +567,18 @@ export default function Profile() {
         </div>
 
         {/* Badges Collection */}
-        <div className="bg-white rounded-2xl p-6 mb-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center gap-2">
             <span>🏅</span> Koleksi Badge
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {Object.entries(BADGE_INFO).map(([badgeId, badge]) => {
               const isUnlocked = user?.badges?.includes(badgeId)
               return (
                 <div
                   key={badgeId}
-                  className={`relative rounded-xl p-4 text-center transition-all duration-300 ${
+                  className={`relative rounded-lg sm:rounded-xl p-3 sm:p-4 text-center transition-all duration-300 ${
                     isUnlocked ? "bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 hover:shadow-lg hover:-translate-y-1" : "bg-gray-50 border-2 border-gray-200 opacity-50"
                   }`}
                 >
@@ -606,23 +612,23 @@ export default function Profile() {
         </div>
 
         {/* Statistics Grid - Total Scan & Sampah Teridentifikasi */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-          <div className="bg-white rounded-2xl p-6 text-center shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-transform duration-300">
-            <div className="text-4xl mb-3">🔍</div>
-            <div className="text-3xl font-bold text-[#10b981] mb-1">{displayStats.totalScans}</div>
-            <div className="text-gray-600 text-sm font-medium">Total Scan</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-transform duration-300">
+            <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">🔍</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#10b981] mb-1">{displayStats.totalScans}</div>
+            <div className="text-gray-600 text-xs sm:text-sm font-medium">Total Scan</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 text-center shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-transform duration-300">
-            <div className="text-4xl mb-3">♻️</div>
-            <div className="text-3xl font-bold text-[#4caf50] mb-1">{displayStats.wasteIdentified}</div>
-            <div className="text-gray-600 text-sm font-medium">Sampah Teridentifikasi</div>
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-[0_4px_15px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-transform duration-300">
+            <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">♻️</div>
+            <div className="text-2xl sm:text-3xl font-bold text-[#4caf50] mb-1">{displayStats.wasteIdentified}</div>
+            <div className="text-gray-600 text-xs sm:text-sm font-medium">Sampah Teridentifikasi</div>
           </div>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-[25px] p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)] mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <div className="bg-white rounded-2xl sm:rounded-[25px] p-5 sm:p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)] mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 flex items-center gap-2">
             <span>📜</span> Riwayat Sampah
           </h2>
 
@@ -645,18 +651,18 @@ export default function Profile() {
               <div className="space-y-3 mb-6 max-h-[400px] overflow-y-auto pr-2">
                 {/* Looping data logs untuk ditampilkan */}
                 {logs.map(log => (
-                  <div key={log._id} className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:shadow-md hover:border-[#10b981]/30 transition-all">
-                    <div className="flex items-center gap-4">
+                  <div key={log._id} className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg sm:rounded-xl border border-gray-100 hover:shadow-md hover:border-[#10b981]/30 transition-all">
+                    <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
                       {/* Ikon berdasarkan jenis sampah */}
                       <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-sm
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-xl shadow-sm flex-shrink-0
                         ${log.waste_type === "Plastik" ? "bg-orange-100 text-orange-600" : log.waste_type === "Organik" ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"}`}
                       >
                         {log.waste_type === "Plastik" ? "🥤" : log.waste_type === "Organik" ? "🍂" : "♻️"}
                       </div>
-                      <div>
-                        <h3 className="font-bold text-gray-800 text-lg">{log.waste_type?.includes("Botol Plasti") ? "Botol Plastik" : log.waste_type}</h3>
-                        <p className="text-xs text-gray-500">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-gray-800 text-sm sm:text-base md:text-lg truncate">{log.waste_type?.includes("Botol Plasti") ? "Botol Plastik" : log.waste_type}</h3>
+                        <p className="text-xs text-gray-500 truncate">
                           {new Date(log.timestamp).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
@@ -666,9 +672,9 @@ export default function Profile() {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className="text-lg font-bold text-[#10b981]">{Math.round(log.confidence * 100)}%</span>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Akurasi</p>
+                    <div className="text-right flex-shrink-0 ml-2">
+                      <span className="text-base sm:text-lg font-bold text-[#10b981]">{Math.round(log.confidence * 100)}%</span>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide hidden sm:block">Akurasi</p>
                     </div>
                   </div>
                 ))}
@@ -684,40 +690,40 @@ export default function Profile() {
         </div>
 
         {/* Statistics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-6 sm:mt-8">
           {/* Scan Statistics per Period */}
-          <div className="bg-white rounded-[25px] p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Statistik Scan</h2>
+          <div className="bg-white rounded-2xl sm:rounded-[25px] p-5 sm:p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Statistik Scan</h2>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-lg">📅</div>
-                  <span className="font-semibold text-gray-700">Hari Ini</span>
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-lg sm:rounded-xl">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-base sm:text-lg">📅</div>
+                  <span className="font-semibold text-gray-700 text-sm sm:text-base">Hari Ini</span>
                 </div>
-                <span className="text-2xl font-bold text-[#10b981]">{displayStats.scanStats.today}</span>
+                <span className="text-xl sm:text-2xl font-bold text-[#10b981]">{displayStats.scanStats.today}</span>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-lg">📆</div>
-                  <span className="font-semibold text-gray-700">Bulan Ini</span>
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-lg sm:rounded-xl">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-base sm:text-lg">📆</div>
+                  <span className="font-semibold text-gray-700 text-sm sm:text-base">Bulan Ini</span>
                 </div>
-                <span className="text-2xl font-bold text-[#10b981]">{displayStats.scanStats.thisMonth}</span>
+                <span className="text-xl sm:text-2xl font-bold text-[#10b981]">{displayStats.scanStats.thisMonth}</span>
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-lg">🗓️</div>
-                  <span className="font-semibold text-gray-700">Tahun Ini</span>
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-[#10b981]/10 to-[#1e3a8a]/10 rounded-lg sm:rounded-xl">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#10b981] rounded-full flex items-center justify-center text-white text-base sm:text-lg">🗓️</div>
+                  <span className="font-semibold text-gray-700 text-sm sm:text-base">Tahun Ini</span>
                 </div>
-                <span className="text-2xl font-bold text-[#10b981]">{displayStats.scanStats.thisYear}</span>
+                <span className="text-xl sm:text-2xl font-bold text-[#10b981]">{displayStats.scanStats.thisYear}</span>
               </div>
             </div>
           </div>
           {/* Top 3 Waste Types */}
-          <div className="bg-white rounded-[25px] p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Top 3 Sampah</h2>
+          <div className="bg-white rounded-2xl sm:rounded-[25px] p-5 sm:p-8 shadow-[0_4px_15px_rgba(0,0,0,0.1)]">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">Top 3 Sampah</h2>
 
             <div className="space-y-4">
               {displayStats.topWasteTypes.map((waste, index) => (

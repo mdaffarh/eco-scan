@@ -7,11 +7,12 @@ import Bin from "@/models/Bin"
  * @desc    Get bin by value (location ID)
  * @access  Admin
  */
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await connectDB()
 
-    const bin = await Bin.findOne({ value: params.value })
+    const { value } = await context.params
+    const bin = await Bin.findOne({ value })
 
     if (!bin) {
       return NextResponse.json({ success: false, error: "Bin location not found" }, { status: 404 })

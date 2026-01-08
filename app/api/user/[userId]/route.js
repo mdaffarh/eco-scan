@@ -7,11 +7,11 @@ import User from "@/models/User"
  * @desc    Get user profile by ID
  * @access  Private
  */
-export async function GET(request, { params }) {
+export async function GET(request, context) {
   try {
     await connectDB()
 
-    const { userId } = params
+    const { userId } = await context.params
 
     const user = await User.findById(userId)
 
@@ -43,11 +43,11 @@ export async function GET(request, { params }) {
  * @desc    Update user profile
  * @access  Private
  */
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await connectDB()
 
-    const { userId } = params
+    const { userId } = await context.params
     const { name, email } = await request.json()
 
     // Validasi input

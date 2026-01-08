@@ -1,12 +1,38 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Database, Users, Trash2, TrendingUp, Activity, Award, Loader2, BarChart3, Target, Calendar, MapPin, PackageCheck } from "lucide-react"
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api"
+import { DashboardSkeleton } from "@/components/ui/skeletons"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Dynamically import heavy chart components
+const BarChart = dynamic(() => import("recharts").then(mod => mod.BarChart), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+})
+const Bar = dynamic(() => import("recharts").then(mod => mod.Bar), { ssr: false })
+const LineChart = dynamic(() => import("recharts").then(mod => mod.LineChart), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+})
+const Line = dynamic(() => import("recharts").then(mod => mod.Line), { ssr: false })
+const PieChart = dynamic(() => import("recharts").then(mod => mod.PieChart), {
+  loading: () => <Skeleton className="h-64 w-full" />,
+  ssr: false,
+})
+const Pie = dynamic(() => import("recharts").then(mod => mod.Pie), { ssr: false })
+const Cell = dynamic(() => import("recharts").then(mod => mod.Cell), { ssr: false })
+const XAxis = dynamic(() => import("recharts").then(mod => mod.XAxis), { ssr: false })
+const YAxis = dynamic(() => import("recharts").then(mod => mod.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import("recharts").then(mod => mod.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import("recharts").then(mod => mod.Tooltip), { ssr: false })
+const Legend = dynamic(() => import("recharts").then(mod => mod.Legend), { ssr: false })
+const ResponsiveContainer = dynamic(() => import("recharts").then(mod => mod.ResponsiveContainer), { ssr: false })
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
@@ -35,11 +61,8 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin mx-auto text-green-600" />
-          <p className="text-slate-600 mt-4">Loading dashboard...</p>
-        </div>
+      <div className="p-6 max-w-7xl mx-auto">
+        <DashboardSkeleton />
       </div>
     )
   }
@@ -177,15 +200,15 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Header with Filter */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-600 mt-1">Welcome to EcoScan Admin Panel</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-slate-600 mt-1 text-sm sm:text-base">Welcome to EcoScan Admin Panel</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Calendar className="h-5 w-5 text-slate-600" />
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
           <Select value={timeFilter} onValueChange={setTimeFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Select time range" />
             </SelectTrigger>
             <SelectContent>
@@ -199,19 +222,19 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
         {statsCards.map((stat, index) => {
           const Icon = stat.icon
           return (
             <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-slate-600">{stat.title}</p>
-                    <h3 className="text-2xl font-bold text-slate-900 mt-2">{stat.value}</h3>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-medium text-slate-600 truncate">{stat.title}</p>
+                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1 sm:mt-2">{stat.value}</h3>
                   </div>
-                  <div className={`${stat.bgColor} p-3 rounded-full`}>
-                    <Icon className={`h-6 w-6 ${stat.color}`} />
+                  <div className={`${stat.bgColor} p-2 sm:p-3 rounded-full flex-shrink-0`}>
+                    <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
                   </div>
                 </div>
               </CardContent>
@@ -222,14 +245,14 @@ export default function AdminDashboard() {
 
       {/* ========== SCAN ACTIVITY ANALYTICS ========== */}
       <div className="space-y-6">
-        <div className="flex items-center gap-2 border-b-2 border-blue-200 pb-3 mt-8">
-          <Activity className="h-6 w-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-slate-900">Scan Activity Analytics</h2>
+        <div className="flex items-center gap-2 border-b-2 border-blue-200 pb-2 sm:pb-3 mt-6 sm:mt-8">
+          <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Scan Activity Analytics</h2>
         </div>
 
         {/* Charts Row 1 */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Recent Activities */}
           <Card>
             <CardHeader>
@@ -239,17 +262,17 @@ export default function AdminDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4 max-h-[300px] overflow-y-auto">
+              <div className="space-y-3 sm:space-y-4 max-h-[300px] overflow-y-auto">
                 {(stats?.recentActivities || []).slice(0, 5).map(activity => (
-                  <div key={activity._id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-medium text-slate-900">{activity.username}</p>
-                      <p className="text-sm text-slate-600">Scanned {activity.waste_type} waste</p>
+                  <div key={activity._id} className="flex items-center justify-between p-2 sm:p-3 bg-slate-50 rounded-lg gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-slate-900 text-sm sm:text-base truncate">{activity.username}</p>
+                      <p className="text-xs sm:text-sm text-slate-600 truncate">Scanned {activity.waste_type} waste</p>
                       <p className="text-xs text-slate-500 mt-1">Confidence: {activity.confidence > 1 ? activity.confidence.toFixed(1) : (activity.confidence * 100).toFixed(1)}%</p>
                     </div>
-                    <div className="text-right">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">+{activity.xp_earned || 0} XP</span>
-                      <p className="text-xs text-slate-500 mt-1">{formatTimeAgo(activity.timestamp)}</p>
+                    <div className="text-right flex-shrink-0">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">+{activity.xp_earned || 0} XP</span>
+                      <p className="text-xs text-slate-500 mt-1 whitespace-nowrap">{formatTimeAgo(activity.timestamp)}</p>
                     </div>
                   </div>
                 ))}

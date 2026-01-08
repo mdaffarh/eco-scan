@@ -1,11 +1,13 @@
 ﻿"use client"
 
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useLocation } from "@/context/LocationContext"
 import { FAKULTAS_OPTIONS, mapWasteTypeToBin, findLocationsWithBin, findLocationsWithFallback, getFallbackBin, binMatches } from "@/utils/locationConfig"
 import Navbar from "@/components/Navbar"
 import { getUser } from "@/utils/authUtils"
+import { ScanResultSkeleton } from "@/components/ui/skeletons"
 
 // Badge definitions (matching backend)
 const BADGE_INFO = {
@@ -219,11 +221,8 @@ export default function Result() {
     return (
       <>
         <Navbar />
-        <div className="max-w-4xl mx-auto px-5 py-5 min-h-[calc(100vh-80px)] flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#10b981] mx-auto mb-4"></div>
-            <p className="text-gray-600 text-lg">Memuat data lokasi...</p>
-          </div>
+        <div className="max-w-4xl mx-auto px-5 py-5">
+          <ScanResultSkeleton />
         </div>
       </>
     )
@@ -263,33 +262,33 @@ export default function Result() {
   return (
     <>
       <Navbar />
-      <div className="max-w-4xl mx-auto px-5 py-5 min-h-[calc(100vh-80px)]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-5 py-4 sm:py-5 min-h-[calc(100vh-80px)]">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl text-gray-800 font-bold">Hasil Identifikasi</h1>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-800 font-bold">Hasil Identifikasi</h1>
 
           {/* Fakultas Info */}
           {fakultasLabel && (
-            <div className="inline-flex items-center gap-2 bg-[#1e293b] text-white py-2.5 px-6 rounded-full text-base font-medium mt-4 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
-              <span className="text-xl">🏛️</span>
+            <div className="inline-flex items-center gap-2 bg-[#1e293b] text-white py-2 px-4 sm:py-2.5 sm:px-6 rounded-full text-sm sm:text-base font-medium mt-3 sm:mt-4 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+              <span className="text-lg sm:text-xl">🏛️</span>
               <span className="font-semibold">{fakultasLabel}</span>
             </div>
           )}
         </div>
 
         {/* XP Notification Card */}
-        <div className="bg-[#1e293b] rounded-2xl p-6 mb-6 shadow-[0_8px_20px_rgba(0,0,0,0.3)] animate-[slideInDown_0.5s_ease-out]">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl animate-[bounce_1s_ease-in-out_3]">⭐</div>
+        <div className="bg-[#1e293b] rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-[0_8px_20px_rgba(0,0,0,0.3)] animate-[slideInDown_0.5s_ease-out]">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center text-xl sm:text-2xl animate-[bounce_1s_ease-in-out_3]">⭐</div>
               <div>
-                <h3 className="text-white font-bold text-xl m-0">Scan Berhasil!</h3>
-                <p className="text-white/90 text-sm m-0">Kamu mendapatkan XP</p>
+                <h3 className="text-white font-bold text-base sm:text-xl m-0">Scan Berhasil!</h3>
+                <p className="text-white/90 text-xs sm:text-sm m-0">Kamu mendapatkan XP</p>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-white font-bold text-3xl">+{xpEarned} XP</div>
-              <div className="text-white/80 text-sm">Level {currentLevel}</div>
+              <div className="text-white font-bold text-2xl sm:text-3xl">+{xpEarned} XP</div>
+              <div className="text-white/80 text-xs sm:text-sm">Level {currentLevel}</div>
             </div>
           </div>
 
@@ -308,13 +307,13 @@ export default function Result() {
           <div className="mb-6 space-y-4">
             {/* Level Up Celebration */}
             {leveledUp && (
-              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 shadow-xl animate-[bounceIn_0.6s_ease-out] relative overflow-hidden">
-                <div className="absolute top-0 right-0 text-9xl opacity-10">🎉</div>
+              <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl animate-[bounceIn_0.6s_ease-out] relative overflow-hidden">
+                <div className="absolute top-0 right-0 text-6xl sm:text-9xl opacity-10">🎉</div>
                 <div className="relative z-10">
                   <div className="text-center">
-                    <div className="text-6xl mb-3 animate-[spin_2s_ease-in-out]">⬆️</div>
-                    <h2 className="text-white font-bold text-3xl mb-2">LEVEL UP!</h2>
-                    <p className="text-white/90 text-xl">Selamat! Kamu naik ke Level {currentLevel}</p>
+                    <div className="text-4xl sm:text-6xl mb-2 sm:mb-3 animate-[spin_2s_ease-in-out]">⬆️</div>
+                    <h2 className="text-white font-bold text-2xl sm:text-3xl mb-1 sm:mb-2">LEVEL UP!</h2>
+                    <p className="text-white/90 text-base sm:text-xl">Selamat! Kamu naik ke Level {currentLevel}</p>
                   </div>
                 </div>
               </div>
@@ -322,18 +321,18 @@ export default function Result() {
 
             {/* New Badges Earned */}
             {newBadges && newBadges.length > 0 && (
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 shadow-xl animate-[slideInRight_0.6s_ease-out]">
-                <h3 className="text-white font-bold text-2xl mb-4 text-center">🏅 Badge Baru Didapat!</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl animate-[slideInRight_0.6s_ease-out]">
+                <h3 className="text-white font-bold text-xl sm:text-2xl mb-3 sm:mb-4 text-center">🏅 Badge Baru Didapat!</h3>
+                <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   {newBadges.map((badgeId, index) => {
                     const badge = BADGE_INFO[badgeId]
                     if (!badge) return null
                     return (
-                      <div key={badgeId} className="bg-white/20 backdrop-blur-sm rounded-xl p-4 flex items-center gap-3 animate-[bounceIn_0.5s_ease-out]" style={{ animationDelay: `${index * 0.1}s` }}>
-                        <div className="text-4xl">{badge.icon}</div>
+                      <div key={badgeId} className="bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-center gap-2 sm:gap-3 animate-[bounceIn_0.5s_ease-out]" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <div className="text-3xl sm:text-4xl">{badge.icon}</div>
                         <div>
-                          <h4 className="text-white font-bold text-lg">{badge.name}</h4>
-                          <p className="text-white/80 text-sm">{badge.description}</p>
+                          <h4 className="text-white font-bold text-base sm:text-lg">{badge.name}</h4>
+                          <p className="text-white/80 text-xs sm:text-sm">{badge.description}</p>
                         </div>
                       </div>
                     )
@@ -347,30 +346,33 @@ export default function Result() {
           </div>
         )}
 
-        <div className="bg-white rounded-[20px] p-10 shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
+        <div className="bg-white rounded-2xl sm:rounded-[20px] p-4 sm:p-6 md:p-10 shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
           {/* Image Section */}
-          <div className="w-full max-h-[400px] rounded-2xl overflow-hidden mb-8 shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
-            <img src={result.image} alt="Scanned waste" className="w-full h-full object-contain block" />
+          <div className="relative w-full h-[250px] sm:h-[350px] md:h-[500px] rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_4px_10px_rgba(0,0,0,0.1)]">
+            <Image src={result.image} alt="Scanned waste" fill className="object-contain" priority />
           </div>
 
           {/* Result Info */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2.5 py-3 px-8 rounded-full text-white font-semibold text-lg mb-5 shadow-[0_4px_10px_rgba(0,0,0,0.2)]" style={{ backgroundColor: getColorByCategory(result.category) }}>
-              <span className="text-2xl">{getCategoryIcon(result.category)}</span>
+          <div className="text-center mb-6 sm:mb-10">
+            <div
+              className="inline-flex items-center gap-2 sm:gap-2.5 py-2 sm:py-3 px-4 sm:px-8 rounded-full text-white font-semibold text-sm sm:text-lg mb-4 sm:mb-5 shadow-[0_4px_10px_rgba(0,0,0,0.2)]"
+              style={{ backgroundColor: getColorByCategory(result.category) }}
+            >
+              <span className="text-xl sm:text-2xl">{getCategoryIcon(result.category)}</span>
               <span>{result.category}</span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl text-gray-800 mb-8 font-bold break-words px-2">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-gray-800 mb-4 sm:mb-8 font-bold break-words px-2">
               {/* Normalize waste_type untuk handle label yang terpotong */}
               {result.waste_type?.includes("Botol Plasti") ? "Botol Plastik" : result.waste_type}
             </h2>
 
-            <div className="max-w-2xl mx-auto">
-              <div className="flex justify-between mb-2.5 text-base text-gray-600">
+            <div className="max-w-2xl mx-auto px-2">
+              <div className="flex justify-between mb-2 text-sm sm:text-base text-gray-600">
                 <span>Tingkat Kepercayaan</span>
-                <span className="font-bold text-[#10b981] text-xl">{result.confidence}%</span>
+                <span className="font-bold text-[#10b981] text-lg sm:text-xl">{result.confidence}%</span>
               </div>
-              <div className="w-full h-8 bg-gray-300 rounded-2xl overflow-hidden">
+              <div className="w-full h-6 sm:h-8 bg-gray-300 rounded-xl sm:rounded-2xl overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-[#10b981] to-[#1e3a8a] transition-all duration-1000 flex items-center justify-end pr-2.5 text-white font-bold" style={{ width: `${result.confidence}%` }}></div>
               </div>
             </div>
@@ -378,36 +380,36 @@ export default function Result() {
 
           {/* Kondisi 1: Fakultas user PUNYA tempat sampah SPESIFIK */}
           {hasPrimaryBin && (
-            <div className="bg-[#e8f5e9] border-l-[5px] border-[#4caf50] py-6 px-6 rounded-xl mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">✅</span>
-                <h3 className="text-2xl text-gray-800 m-0">Tempat Pembuangan Tersedia di {fakultasLabel}</h3>
+            <div className="bg-[#e8f5e9] border-l-[4px] sm:border-l-[5px] border-[#4caf50] py-4 sm:py-6 px-4 sm:px-6 rounded-lg sm:rounded-xl mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <span className="text-2xl sm:text-3xl">✅</span>
+                <h3 className="text-lg sm:text-xl md:text-2xl text-gray-800 m-0">Tempat Pembuangan Tersedia di {fakultasLabel}</h3>
               </div>
-              <p className="text-gray-600 text-lg leading-relaxed m-0 font-medium mb-4">
+              <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed m-0 font-medium mb-3 sm:mb-4">
                 Buang sampah <strong>{result.waste_type?.includes("Botol Plasti") ? "Botol Plastik" : result.waste_type}</strong> ke tempat sampah <strong>{targetBin}</strong> yang tersedia di lokasi berikut:
               </p>
 
-              <div className="mt-5 flex flex-col gap-4">
+              <div className="mt-4 sm:mt-5 flex flex-col gap-3 sm:gap-4">
                 {locationResult.primaryLocations.map((lokasi, index) => {
                   const locationKey = `primary-${index}`
                   const isImageExpanded = expandedLocationImages[locationKey]
 
                   return (
-                    <div key={index} className="bg-white border-2 border-gray-200 rounded-xl p-5 transition-all duration-300 hover:border-[#10b981] hover:shadow-[0_4px_12px_rgba(16,185,129,0.15)]">
-                      <div className="flex items-start gap-3 mb-3">
-                        <span className="text-2xl mt-0.5">📍</span>
+                    <div key={index} className="bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-5 transition-all duration-300 hover:border-[#10b981] hover:shadow-[0_4px_12px_rgba(16,185,129,0.15)]">
+                      <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
+                        <span className="text-xl sm:text-2xl mt-0.5">📍</span>
                         <div className="flex-1">
-                          <h4 className="text-lg font-semibold text-gray-800 my-0 mb-1">{lokasi.label}</h4>
-                          <p className="text-sm text-gray-600 m-0">{lokasi.description}</p>
+                          <h4 className="text-base sm:text-lg font-semibold text-gray-800 my-0 mb-1">{lokasi.label}</h4>
+                          <p className="text-xs sm:text-sm text-gray-600 m-0">{lokasi.description}</p>
                         </div>
                       </div>
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <span className="block text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wider">Tempat sampah:</span>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-200">
+                        <span className="block text-xs font-semibold text-gray-600 mb-1.5 sm:mb-2 uppercase tracking-wider">Tempat sampah:</span>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
                           {lokasi.bins.map((bin, binIndex) => (
                             <span
                               key={binIndex}
-                              className={`py-1.5 px-3.5 rounded-2xl text-sm font-medium border ${
+                              className={`py-1 px-2.5 sm:py-1.5 sm:px-3.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium border ${
                                 binMatches(bin, targetBin) ? "bg-[#4caf50] text-white border-[#4caf50] font-semibold shadow-[0_2px_8px_rgba(76,175,80,0.3)]" : "bg-[#e3f2fd] text-[#1976d2] border-[#bbdefb]"
                               }`}
                             >
@@ -737,14 +739,14 @@ export default function Result() {
 
           {/* All Predictions (confidence breakdown) */}
           {result.allPredictions && result.allPredictions.length > 0 && (
-            <div className="bg-[#f8f9ff] border-l-[4px] border-[#1e293b] py-6 px-6 rounded-xl mb-6">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">📊</span>
-                <h3 className="text-2xl text-gray-800 m-0 font-bold">Detail Prediksi</h3>
+            <div className="bg-[#f8f9ff] border-l-[4px] border-[#1e293b] py-4 sm:py-6 px-4 sm:px-6 rounded-lg sm:rounded-xl mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <span className="text-2xl sm:text-3xl">📊</span>
+                <h3 className="text-lg sm:text-xl md:text-2xl text-gray-800 m-0 font-bold">Detail Prediksi</h3>
               </div>
-              <div className="flex flex-col gap-4 mt-4">
+              <div className="flex flex-col gap-3 sm:gap-4 mt-3 sm:mt-4">
                 {result.allPredictions.map((pred, index) => (
-                  <div key={index} className="grid grid-cols-[180px_1fr_60px] items-center gap-4">
+                  <div key={index} className="grid grid-cols-[100px_1fr_50px] sm:grid-cols-[150px_1fr_60px] md:grid-cols-[180px_1fr_60px] items-center gap-2 sm:gap-4">
                     <span className="font-medium text-gray-800 text-sm">{pred.label}</span>
                     <div className="h-6 bg-gray-300 rounded-xl overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-[#10b981] to-[#1e3a8a] transition-all duration-500 rounded-xl" style={{ width: `${pred.confidence}%` }}></div>
@@ -757,15 +759,15 @@ export default function Result() {
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mt-10">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-10">
             <button
-              className="flex-1 py-4 px-8 text-lg font-semibold border-none rounded-full cursor-pointer transition-all duration-300 bg-white text-[#10b981] border-2 border-[#10b981] hover:bg-[#f8f9ff] hover:-translate-y-0.5"
+              className="flex-1 py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg font-semibold border-none rounded-full cursor-pointer transition-all duration-300 bg-white text-[#10b981] border-2 border-[#10b981] hover:bg-[#f8f9ff] hover:-translate-y-0.5"
               onClick={() => router.push("/home")}
             >
               Kembali ke Home
             </button>
             <button
-              className="flex-1 py-4 px-8 text-lg font-semibold border-none rounded-full cursor-pointer transition-all duration-300 bg-[#1e293b] text-white hover:-translate-y-0.5 hover:shadow-md hover:bg-[#334155]"
+              className="flex-1 py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg font-semibold border-none rounded-full cursor-pointer transition-all duration-300 bg-[#1e293b] text-white hover:-translate-y-0.5 hover:shadow-md hover:bg-[#334155]"
               onClick={() => router.push("/scan")}
             >
               Scan Lagi
